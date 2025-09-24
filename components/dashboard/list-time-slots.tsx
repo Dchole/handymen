@@ -25,12 +25,12 @@ const ListTimeSlots = async ({ searchParams }: ListTimeSlotsProps) => {
   let hasNextPage = false;
   let totalPages = 1;
 
-  const prevLink = hasPrevPage
-    ? `/painter?page=${Number(page) - 1}&limit=${limit}`
-    : `/painter?page=${page}&limit=${limit}`;
-  const nextLink = hasNextPage
-    ? `/painter?page=${Number(page) + 1}&limit=${limit}`
-    : `/painter?page=${page}&limit=${limit}`;
+  const prevPageUrl = hasPrevPage
+    ? `/handyman?page=${Number(page) - 1}&limit=${limit}`
+    : `/handyman?page=${page}&limit=${limit}`;
+  const nextPageUrl = hasNextPage
+    ? `/handyman?page=${Number(page) + 1}&limit=${limit}`
+    : `/handyman?page=${page}&limit=${limit}`;
 
   const { data } = await axiosInstance.get<AvailabilitySlotConnection>(
     `/availability/me?page=${page}&limit=${limit}`,
@@ -44,7 +44,7 @@ const ListTimeSlots = async ({ searchParams }: ListTimeSlotsProps) => {
   const pages = new Array(totalPages).fill(1);
 
   const getPageLink = (pageNumber: number) =>
-    `/painter?page=${pageNumber}&limit=${limit}`;
+    `/handyman?page=${pageNumber}&limit=${limit}`;
 
   return (
     <>
@@ -62,7 +62,7 @@ const ListTimeSlots = async ({ searchParams }: ListTimeSlotsProps) => {
         <Pagination className="sm:justify-start">
           <PaginationContent>
             <PaginationItem>
-              <PaginationPrevious href={prevLink} />
+              <PaginationPrevious href={prevPageUrl} />
             </PaginationItem>
             {pages.map((_, i) => (
               <PaginationItem key={i}>
@@ -72,7 +72,7 @@ const ListTimeSlots = async ({ searchParams }: ListTimeSlotsProps) => {
               </PaginationItem>
             ))}
             <PaginationItem>
-              <PaginationNext href={nextLink} />
+              <PaginationNext href={nextPageUrl} />
             </PaginationItem>
           </PaginationContent>
         </Pagination>

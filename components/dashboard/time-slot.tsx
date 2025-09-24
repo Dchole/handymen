@@ -1,8 +1,8 @@
 import { ClockIcon } from "lucide-react";
 import { Card, CardContent, CardFooter } from "../ui/card";
 import { formatDate, formatDuration, intervalToDuration } from "date-fns";
-import { EditAvailabilityModal } from "@/app/painter/modals/edit-availability";
-import { DeleteAvailabilityModal } from "@/app/painter/modals/delete-availability";
+import { EditAvailabilityModal } from "@/app/handyman/modals/edit-availability";
+import { DeleteAvailabilityModal } from "@/app/handyman/modals/delete-availability";
 import { sameDates } from "@/utils/same-dates";
 import { readableDateFormat } from "@/utils/readable-date-format";
 

@@ -11,7 +11,7 @@ import { formatDate } from "date-fns";
 import { sameDates } from "@/utils/same-dates";
 import { readableDateFormat } from "@/utils/readable-date-format";
 
-const RequestForm = forwardRef<HTMLFormElement, undefined>(function (_, ref) {
+const RequestForm = forwardRef<HTMLFormElement, {}>(function (_, ref) {
   const router = useRouter();
   const [state, action, pending] = useActionState(bookSlot, undefined);
   const [startDateTime, setStartDateTime] = useState("");

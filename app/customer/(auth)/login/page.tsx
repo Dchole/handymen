@@ -9,7 +9,7 @@ const LoginCustomer = () => {
         Welcome back
       </h1>
       <p className="font-sans text-gray-600 mb-8">
-        Login to book professional painters
+        Login to book professional handymen
       </p>
       <Card className="w-full max-w-sm">
         <CardContent className="p-6">

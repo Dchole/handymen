@@ -11,7 +11,7 @@ import { RequestSlotsStatus } from "@/app/types";
 
 interface BookingRequestCardProps {
   id: string;
-  painter: { id: string; name: string } | null;
+  handyman: { id: string; name: string; professions: string[] } | null;
   startTime: string;
   endTime: string;
   status: RequestSlotsStatus;
@@ -26,7 +26,7 @@ const statusColors: Record<RequestSlotsStatus, string> = {
 
 export default function BookingRequestCard({
   id,
-  painter,
+  handyman,
   startTime,
   endTime,
   status
@@ -41,7 +41,7 @@ export default function BookingRequestCard({
           <PaintRollerIcon className="w-6 h-6 text-green-600" />
         </div>
         <p className="font-serif font-bold text-gray-900">
-          {painter?.name || "Unassigned"}
+          {handyman?.name || "Unassigned"}
         </p>
       </CardHeader>
       <CardContent className="space-y-2 pb-4 pt-0">

@@ -21,7 +21,7 @@ const Availability = ({
             Manage your available time slots
           </p>
         </div>
-        <AvatarCard accountType={AccountType.PAINTER} />
+        <AvatarCard accountType={AccountType.HANDYMAN} />
       </header>
       <main className="py-8 px-2 md:px-16 mx-auto">
         <h2 className="font-serif text-2xl font-bold text-gray-800 w-fit mb-4">
@@ -32,7 +32,7 @@ const Availability = ({
             asChild
             className="bg-amber-600 hover:bg-amber-700 active:bg-amber-800 transition-colors"
           >
-            <Link href="/painter/create">
+            <Link href="/handyman/create">
               <PlusIcon /> Add Availability slot
             </Link>
           </Button>

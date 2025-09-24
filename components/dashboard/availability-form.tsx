@@ -45,7 +45,7 @@ const AvailabilityForm = forwardRef<HTMLFormElement, AvailabilityFormProps>(
           onModalClose();
         } else {
           setTimeout(() => {
-            router.push("/painter?created=true");
+            router.push("/handyman?created=true");
           }, 2000);
         }
       }

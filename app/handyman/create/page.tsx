@@ -9,7 +9,7 @@ const CreateAvailability = () => {
     <div className="mx-auto max-w-5xl min-h-screen">
       <header className="bg-white w-full px-2 py-2 sm:px-8 sticky top-0 mt-8 mb-4">
         <Button asChild variant="ghost">
-          <Link href="/painter">
+          <Link href="/handyman">
             <ArrowLeftIcon className="w-4 h-4 mr-2" />
             Back to Dashboard
           </Link>

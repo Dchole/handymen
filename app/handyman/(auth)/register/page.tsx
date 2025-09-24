@@ -2,11 +2,11 @@ import Link from "next/link";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import RegisterForm from "@/components/form/register";
 
-const RegisterPainter = () => {
+const RegisterHandyman = () => {
   return (
     <>
       <h1 className="font-serif text-3xl font-bold text-gray-900 my-2">
-        Join as Painter
+        Join as Handyman
       </h1>
       <p className="font-sans text-gray-600 mb-8">
         Create your account to start painting for customers
@@ -19,7 +19,7 @@ const RegisterPainter = () => {
           <p>
             Already have an account?{" "}
             <Link
-              href="/painter/login"
+              href="/handyman/login"
               className="text-sm text-blue-700 underline-offset-4 hover:underline"
             >
               Login
@@ -31,4 +31,4 @@ const RegisterPainter = () => {
   );
 };
 
-export default RegisterPainter;
+export default RegisterHandyman;

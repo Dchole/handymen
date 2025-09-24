@@ -57,7 +57,7 @@ const ListBookingRequests = async ({
             key={request.id}
             startTime={request.start_time}
             endTime={request.end_time}
-            painter={request.painter}
+            handyman={request.handyman}
             status={request.status}
           />
         ))}

@@ -18,7 +18,7 @@ const LoginForm = () => {
   const [state, action, pending] = useActionState(login, undefined);
   const accountType = pathname.startsWith("/customer")
     ? AccountType.CUSTOMER
-    : AccountType.PAINTER;
+    : AccountType.HANDYMAN;
 
   const [values, setValues] = useState({
     email: "",

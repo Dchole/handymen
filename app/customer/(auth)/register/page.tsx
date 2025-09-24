@@ -9,7 +9,7 @@ const RegisterCustomer = () => {
         Join as Customer
       </h1>
       <p className="font-sans text-gray-600 mb-8">
-        Create your account to book professional painters
+        Create your account to book professional handymen
       </p>
       <Card className="w-full max-w-sm">
         <CardContent className="p-6">

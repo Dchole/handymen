@@ -83,7 +83,7 @@ export async function editAvailability(_: FormState, formData: FormData) {
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
-    revalidatePath("/painter");
+    revalidatePath("/handyman");
 
     return { message: "Availability edited successful!", status: "success" };
   } catch (error) {

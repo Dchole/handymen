@@ -18,7 +18,7 @@ const RegisterForm = () => {
   const [state, action, pending] = useActionState(register, undefined);
   const accountType = pathname.startsWith("/customer")
     ? AccountType.CUSTOMER
-    : AccountType.PAINTER;
+    : AccountType.HANDYMAN;
 
   const [values, setValues] = useState({
     firstName: "",

@@ -1,5 +1,5 @@
 export enum AccountType {
-  PAINTER = "PAINTER",
+  HANDYMAN = "HANDYMAN",
   CUSTOMER = "CUSTOMER"
 }
 
@@ -25,7 +25,7 @@ export type User = {
   email: string;
   first_name: string;
   last_name: string;
-  painter_profile: Profile | null;
+  handyman_profile: Profile | null;
   customer_profile: Profile | null;
   created_at: string;
   updated_at: string;
@@ -33,7 +33,7 @@ export type User = {
 
 export type AvailabilitySlot = {
   id: string;
-  painter_profile_id: string;
+  handyman_profile_id: string;
   start_time: string;
   end_time: string;
 };
@@ -54,10 +54,12 @@ export type BookingRequest = {
   customer_profile_id: string;
   start_time: string;
   end_time: string;
+  profession: string;
   status: RequestSlotsStatus;
-  painter: {
+  handyman: {
     id: string;
     name: string;
+    professions: string[];
   } | null;
 };
 

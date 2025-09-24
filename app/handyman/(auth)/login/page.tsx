@@ -18,7 +18,7 @@ const LoginPainter = () => {
         <p>
           Haven&apos;t registered yet?{" "}
           <Link
-            href="/painter/register"
+            href="/handyman/register"
             className="text-blue-700 underline-offset-4 hover:underline"
           >
             Sign up here

@@ -25,12 +25,12 @@ const AvatarCard = async ({ accountType }: AvatarProps) => {
         <div
           className={cn(
             "p-2 w-fit rounded-full transition-colors",
-            accountType === AccountType.PAINTER
+            accountType === AccountType.HANDYMAN
               ? "bg-amber-100 group-hover:bg-amber-200"
               : "bg-green-100 group-hover:bg-green-200"
           )}
         >
-          {accountType === AccountType.PAINTER ? (
+          {accountType === AccountType.HANDYMAN ? (
             <PaintRollerIcon className="w-6 h-6 text-amber-600" />
           ) : (
             <CalendarIcon className="w-6 h-6 text-green-600" />

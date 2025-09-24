@@ -27,7 +27,7 @@ export function DeleteAvailabilityModal({ id }: DeleteAvailabilityModalProps) {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    revalidatePath("/painter");
+    revalidatePath("/handyman");
   };
 
   return (
