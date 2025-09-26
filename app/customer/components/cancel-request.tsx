@@ -45,7 +45,7 @@ export function CancelRequestModal({ id, status }: CancelRequestModalProps) {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            The painter might not be available another time
+            The handyman might not be available another time
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

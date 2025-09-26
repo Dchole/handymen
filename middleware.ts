@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { AccountType } from "./app/types";
 
 const publicRoutes = [
-  "/painter/login",
-  "/painter/register",
+  "/handyman/login",
+  "/handyman/register",
   "/customer/login",
   "/customer/register"
 ];
@@ -11,12 +11,12 @@ const publicRoutes = [
 export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
-  if (!path.startsWith("/painter") && !path.startsWith("/customer")) {
+  if (!path.startsWith("/handyman") && !path.startsWith("/customer")) {
     return NextResponse.next();
   }
 
   const isPublicRoute = publicRoutes.includes(path);
-  const isPainterRoute = path.startsWith("/painter");
+  const isHandymanRoute = path.startsWith("/handyman");
   const isCustomerRoute = path.startsWith("/customer");
 
   const session = request.cookies.get("session");
@@ -32,8 +32,8 @@ export function middleware(request: NextRequest) {
   }
 
   if (!isPublicRoute && !session) {
-    if (isPainterRoute) {
-      const loginUrl = new URL("/painter/login", request.url);
+    if (isHandymanRoute) {
+      const loginUrl = new URL("/handyman/login", request.url);
       loginUrl.searchParams.set("redirect", path);
       return NextResponse.redirect(loginUrl);
     }
@@ -47,7 +47,7 @@ export function middleware(request: NextRequest) {
   if (isPublicRoute && session) {
     const { searchParams } = request.nextUrl;
     const redirectUrl = searchParams.get("redirect");
-    const fallbackUrl = isPainterRoute ? "/painter" : "/customer";
+    const fallbackUrl = isHandymanRoute ? "/handyman" : "/customer";
 
     return NextResponse.redirect(
       new URL(redirectUrl || fallbackUrl, request.url)

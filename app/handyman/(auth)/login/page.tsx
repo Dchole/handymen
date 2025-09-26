@@ -2,12 +2,12 @@ import Link from "next/link";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import LoginForm from "@/components/form/login";
 
-const LoginPainter = () => {
+const LoginHandyman = () => {
   return (
     <Card className="w-full max-w-sm">
       <CardContent className="p-6">
         <h1 className="font-serif text-3xl font-bold text-gray-900 my-2">
-          Welcome back, Painter
+          Welcome back, Handyman
         </h1>
         <p className="font-sans text-gray-600 mb-8">
           Login to see who&apos;s requesting your services
@@ -29,4 +29,4 @@ const LoginPainter = () => {
   );
 };
 
-export default LoginPainter;
+export default LoginHandyman;
