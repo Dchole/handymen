@@ -11,11 +11,11 @@ const RegisterCustomer = () => {
       <p className="font-sans text-gray-600 mb-8">
         Create your account to book professional handymen
       </p>
-      <Card className="w-full max-w-sm">
-        <CardContent className="p-6">
+      <Card className="w-full border-0 shadow-none sm:shadow sm:border sm:max-w-sm">
+        <CardContent className="p-0 sm:p-6">
           <RegisterForm />
         </CardContent>
-        <CardFooter className="flex-col gap-2">
+        <CardFooter className="flex-col mt-4">
           <p>
             Already have an account?{" "}
             <Link

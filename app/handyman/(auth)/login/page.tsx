@@ -4,8 +4,8 @@ import LoginForm from "@/components/form/login";
 
 const LoginHandyman = () => {
   return (
-    <Card className="w-full max-w-sm">
-      <CardContent className="p-6">
+    <Card className="w-full border-0 shadow-none sm:shadow sm:border sm:max-w-sm">
+      <CardContent className="p-0 sm:p-6">
         <h1 className="font-serif text-3xl font-bold text-gray-900 my-2">
           Welcome back, Handyman
         </h1>
@@ -14,7 +14,7 @@ const LoginHandyman = () => {
         </p>
         <LoginForm />
       </CardContent>
-      <CardFooter className="flex-col gap-2">
+      <CardFooter className="flex-col mt-4">
         <p>
           Haven&apos;t registered yet?{" "}
           <Link

@@ -11,11 +11,11 @@ const LoginCustomer = () => {
       <p className="font-sans text-gray-600 mb-8">
         Login to book professional handymen
       </p>
-      <Card className="w-full max-w-sm">
-        <CardContent className="p-6">
+      <Card className="w-full border-0 shadow-none sm:shadow sm:border sm:max-w-sm">
+        <CardContent className="p-0 sm:p-6">
           <LoginForm />
         </CardContent>
-        <CardFooter className="flex-col gap-2">
+        <CardFooter className="flex-col mt-4 p-0 sm:pb-6 sm:px-6">
           <p>
             Haven&apos;t registered yet?{" "}
             <Link
