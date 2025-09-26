@@ -80,3 +80,5 @@ export enum RequestSlotsStatus {
   CANCELLED = "CANCELLED",
   COMPLETED = "COMPLETED"
 }
+
+export type RegistrationStep = "personalInfo" | "credentials" | "professions";

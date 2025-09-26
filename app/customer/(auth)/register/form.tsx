@@ -6,19 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LoaderIcon } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import { register } from "../../../actions/register";
 import { AccountType } from "@/app/types";
 
 const RegisterForm = () => {
   const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
   const [state, action, pending] = useActionState(register, undefined);
-  const accountType = pathname.startsWith("/customer")
-    ? AccountType.CUSTOMER
-    : AccountType.HANDYMAN;
 
   const [values, setValues] = useState({
     firstName: "",
@@ -29,7 +25,7 @@ const RegisterForm = () => {
 
   useEffect(() => {
     if (state?.status === "success") {
-      router.push(`/${accountType.toLowerCase()}/login?success=true`);
+      router.push("/customer/login?success=true");
     }
   }, [state]);
 
@@ -62,7 +58,7 @@ const RegisterForm = () => {
           <input
             type="text"
             name="accountType"
-            defaultValue={accountType}
+            defaultValue={AccountType.CUSTOMER}
             hidden
           />
           <div className="flex flex-col items-start space-y-2 font-mono">

@@ -1,0 +1,144 @@
+"use client";
+
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+const COMMON_PROFESSIONS = [
+  "Plumber",
+  "Electrician",
+  "Painter",
+  "Carpenter",
+  "HVAC Technician",
+  "Locksmith",
+  "General Handyman",
+  "Tile Installer",
+  "Drywall Repair",
+  "Flooring Installer"
+];
+
+interface ProfessionStepProps {
+  professions: string[];
+  onAdd: (profession: string) => void;
+  onRemove: (profession: string) => void;
+  errors?: string[];
+}
+
+const ProfessionStep = ({
+  professions,
+  onAdd,
+  onRemove,
+  errors
+}: ProfessionStepProps) => {
+  const [customProfession, setCustomProfession] = useState("");
+
+  const handleAddCustom = () => {
+    if (customProfession.trim()) {
+      onAdd(customProfession.trim());
+      setCustomProfession("");
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddCustom();
+    }
+  };
+
+  return (
+    <div className="flex flex-col space-y-6">
+      <div>
+        <Label className="text-sm font-medium">Select your skills</Label>
+        <p className="text-xs text-gray-600 mb-3">
+          Choose from common services
+        </p>
+        <div className="grid grid-cols-2 gap-2">
+          {COMMON_PROFESSIONS.map(profession => (
+            <button
+              key={profession}
+              type="button"
+              onClick={() =>
+                professions.includes(profession)
+                  ? onRemove(profession)
+                  : onAdd(profession)
+              }
+              className={`p-2 text-sm rounded-md border transition-colors text-left ${
+                professions.includes(profession)
+                  ? "bg-blue-50 border-blue-200 text-blue-800"
+                  : "bg-white border-gray-200 hover:border-gray-300"
+              }`}
+            >
+              {profession}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <Label htmlFor="custom_profession" className="text-sm font-medium">
+          Add custom skill
+        </Label>
+        <div className="flex space-x-2 mt-2">
+          <Input
+            id="custom_profession"
+            type="text"
+            placeholder="e.g., Pool Maintenance"
+            value={customProfession}
+            onChange={e => setCustomProfession(e.target.value)}
+            onKeyPress={handleKeyPress}
+            className="flex-1"
+          />
+          <Button
+            type="button"
+            onClick={handleAddCustom}
+            disabled={!customProfession.trim()}
+            size="sm"
+          >
+            Add
+          </Button>
+        </div>
+      </div>
+
+      {professions.length > 0 && (
+        <div>
+          <Label className="text-sm font-medium">Selected skills</Label>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {professions.map(profession => (
+              <span
+                key={profession}
+                className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800"
+              >
+                {profession}
+                <button
+                  type="button"
+                  onClick={() => onRemove(profession)}
+                  className="ml-2 text-blue-600 hover:text-blue-800"
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {professions.length === 0 && (
+        <p className="text-sm text-gray-500 text-center py-4">
+          Please select at least one skill to continue
+        </p>
+      )}
+
+      {errors && errors.length > 0 && (
+        <div className="text-red-500 text-sm">
+          {errors.map((error, index) => (
+            <p key={index}>{error}</p>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ProfessionStep;

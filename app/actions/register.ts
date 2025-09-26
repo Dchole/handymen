@@ -27,17 +27,17 @@ export const RegisterFormSchema = z.object({
 });
 
 // Step-specific schemas
-export const Step1Schema = RegisterFormSchema.pick({
+export const PersonalInfoSchema = RegisterFormSchema.pick({
   firstName: true,
   lastName: true
 });
 
-export const Step2Schema = RegisterFormSchema.pick({
+export const CredentialsSchema = RegisterFormSchema.pick({
   email: true,
   password: true
 });
 
-export const Step3Schema = RegisterFormSchema.pick({
+export const ProfessionsSchema = RegisterFormSchema.pick({
   professions: true
 });
 
@@ -57,16 +57,19 @@ type FormState =
 
 // Step validation functions
 // Client-side validation functions
-export function validateStep1(data: { firstName: string; lastName: string }) {
-  return Step1Schema.safeParse(data);
+export function validatePersonalInfo(data: {
+  firstName: string;
+  lastName: string;
+}) {
+  return PersonalInfoSchema.safeParse(data);
 }
 
-export function validateStep2(data: { email: string; password: string }) {
-  return Step2Schema.safeParse(data);
+export function validateCredentials(data: { email: string; password: string }) {
+  return CredentialsSchema.safeParse(data);
 }
 
-export function validateStep3(data: { professions: string[] }) {
-  return Step3Schema.safeParse(data);
+export function validateProfessions(data: { professions: string[] }) {
+  return ProfessionsSchema.safeParse(data);
 }
 
 export async function register(state: FormState, formData: FormData) {
