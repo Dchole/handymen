@@ -1,10 +1,7 @@
 "use client";
 
-import PasswordField from "@/components/form/password-field";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { LoaderIcon, ChevronLeft } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
@@ -16,6 +13,9 @@ import {
 } from "../../../actions/register";
 import { AccountType, RegistrationStep } from "@/app/types";
 import ProfessionStep from "@/components/form/profession-step";
+import ProgressIndicator from "@/components/form/progress-indicator";
+import PersonalInfoStep from "@/components/form/personal-info-step";
+import CredentialsStep from "@/components/form/credentials-step";
 
 const RegisterForm = () => {
   const router = useRouter();
@@ -53,42 +53,6 @@ const RegisterForm = () => {
     }));
   };
 
-  const handleNextStep = () => {
-    setStepErrors({});
-
-    if (currentStep === "personalInfo") {
-      const validation = validatePersonalInfo({
-        firstName: values.firstName,
-        lastName: values.lastName
-      });
-
-      if (!validation.success) {
-        setStepErrors(validation.error.flatten().fieldErrors);
-        return;
-      }
-      setCurrentStep("credentials");
-    } else if (currentStep === "credentials") {
-      const validation = validateCredentials({
-        email: values.email,
-        password: values.password
-      });
-
-      if (!validation.success) {
-        setStepErrors(validation.error.flatten().fieldErrors);
-        return;
-      }
-      setCurrentStep("professions");
-    }
-  };
-
-  const handlePrevStep = () => {
-    if (currentStep === "credentials") {
-      setCurrentStep("personalInfo");
-    } else if (currentStep === "professions") {
-      setCurrentStep("credentials");
-    }
-  };
-
   const handleProfessionAdd = (profession: string) => {
     if (profession && !values.professions.includes(profession)) {
       setValues(prev => ({
@@ -105,9 +69,95 @@ const RegisterForm = () => {
     }));
   };
 
-  const isPersonalInfoValid = values.firstName && values.lastName;
-  const isCredentialsValid = values.email && values.password;
-  const isProfessionsValid = values.professions.length > 0;
+  const stepConfig = {
+    personalInfo: {
+      title: "Your Name",
+      description: "What should we call you?",
+      validate: () =>
+        validatePersonalInfo({
+          firstName: values.firstName,
+          lastName: values.lastName
+        }),
+      isValid: () => values.firstName && values.lastName,
+      nextStep: "credentials" as RegistrationStep,
+      prevStep: null,
+      component: (
+        <PersonalInfoStep
+          firstName={values.firstName}
+          lastName={values.lastName}
+          onChange={handleInputChange}
+          errors={{
+            firstName: state?.errors?.firstName || stepErrors?.firstName,
+            lastName: state?.errors?.lastName || stepErrors?.lastName
+          }}
+        />
+      )
+    },
+    credentials: {
+      title: "Account Details",
+      description: "Email and password for your account",
+      validate: () =>
+        validateCredentials({
+          email: values.email,
+          password: values.password
+        }),
+      isValid: () => values.email && values.password,
+      nextStep: "professions" as RegistrationStep,
+      prevStep: "personalInfo" as RegistrationStep,
+      component: (
+        <CredentialsStep
+          email={values.email}
+          password={values.password}
+          onChange={handleInputChange}
+          errors={{
+            email: state?.errors?.email || stepErrors?.email,
+            password: state?.errors?.password || stepErrors?.password
+          }}
+        />
+      )
+    },
+    professions: {
+      title: "Your Skills",
+      description: "What services do you provide?",
+      validate: () =>
+        validateProfessions({
+          professions: values.professions
+        }),
+      isValid: () => values.professions.length > 0,
+      nextStep: null,
+      prevStep: "credentials" as RegistrationStep,
+      component: (
+        <ProfessionStep
+          professions={values.professions}
+          onAdd={handleProfessionAdd}
+          onRemove={handleProfessionRemove}
+          errors={state?.errors?.professions || stepErrors?.professions}
+        />
+      )
+    }
+  } as const;
+
+  const handleNextStep = () => {
+    setStepErrors({});
+
+    const currentStepConfig = stepConfig[currentStep];
+    if (!currentStepConfig?.nextStep) return;
+
+    const validation = currentStepConfig.validate();
+    if (!validation.success) {
+      setStepErrors(validation.error.flatten().fieldErrors);
+      return;
+    }
+
+    setCurrentStep(currentStepConfig.nextStep);
+  };
+
+  const handlePrevStep = () => {
+    const currentStepConfig = stepConfig[currentStep];
+    if (currentStepConfig?.prevStep) {
+      setCurrentStep(currentStepConfig.prevStep);
+    }
+  };
 
   return (
     <>
@@ -127,69 +177,24 @@ const RegisterForm = () => {
         </Alert>
       )}
 
-      <div className="flex items-center justify-center mb-6">
-        <div className="flex items-center space-x-2">
-          <div
-            className={`w-3 h-3 rounded-full ${
-              currentStep === "personalInfo" ||
-              currentStep === "credentials" ||
-              currentStep === "professions"
-                ? "bg-blue-600"
-                : "bg-gray-300"
-            }`}
-          />
-          <div
-            className={`w-8 h-0.5 ${
-              currentStep === "credentials" || currentStep === "professions"
-                ? "bg-blue-600"
-                : "bg-gray-300"
-            }`}
-          />
-          <div
-            className={`w-3 h-3 rounded-full ${
-              currentStep === "credentials" || currentStep === "professions"
-                ? "bg-blue-600"
-                : "bg-gray-300"
-            }`}
-          />
-          <div
-            className={`w-8 h-0.5 ${
-              currentStep === "professions" ? "bg-blue-600" : "bg-gray-300"
-            }`}
-          />
-          <div
-            className={`w-3 h-3 rounded-full ${
-              currentStep === "professions" ? "bg-blue-600" : "bg-gray-300"
-            }`}
-          />
-        </div>
-      </div>
+      <ProgressIndicator currentStep={currentStep} />
 
       <div className="mb-4">
-        <h3 className="text-lg font-medium">
-          {currentStep === "personalInfo" && "Your Name"}
-          {currentStep === "credentials" && "Account Details"}
-          {currentStep === "professions" && "Your Skills"}
+        <h3 className="text-lg font-medium font-serif">
+          {stepConfig[currentStep].title}
         </h3>
         <p className="text-sm text-gray-600">
-          {currentStep === "personalInfo" && "What should we call you?"}
-          {currentStep === "credentials" &&
-            "Email and password for your account"}
-          {currentStep === "professions" && "What services do you provide?"}
+          {stepConfig[currentStep].description}
         </p>
       </div>
 
       <form
         action={
-          currentStep === "professions"
+          !stepConfig[currentStep].nextStep
             ? (formData: FormData) => {
-                const professionsValidation = validateProfessions({
-                  professions: values.professions
-                });
-                if (!professionsValidation.success) {
-                  setStepErrors(
-                    professionsValidation.error.flatten().fieldErrors
-                  );
+                const validation = stepConfig[currentStep].validate();
+                if (!validation.success) {
+                  setStepErrors(validation.error.flatten().fieldErrors);
                   return;
                 }
                 action(formData);
@@ -218,83 +223,10 @@ const RegisterForm = () => {
           </>
         )}
 
-        {currentStep === "personalInfo" && (
-          <div className="flex flex-col space-y-6">
-            <div className="flex flex-col items-start space-y-2 font-mono">
-              <Label htmlFor="first_name">First name</Label>
-              <Input
-                id="first_name"
-                name="firstName"
-                type="text"
-                placeholder="John"
-                value={values.firstName}
-                onChange={handleInputChange}
-                required
-              />
-              {(state?.errors?.firstName || stepErrors?.firstName) && (
-                <small className="text-red-500 text-start">
-                  {state?.errors?.firstName || stepErrors?.firstName}
-                </small>
-              )}
-            </div>
-            <div className="flex flex-col items-start space-y-2 font-mono">
-              <Label htmlFor="last_name">Last name</Label>
-              <Input
-                id="last_name"
-                name="lastName"
-                type="text"
-                placeholder="Doe"
-                value={values.lastName}
-                onChange={handleInputChange}
-                required
-              />
-              {(state?.errors?.lastName || stepErrors?.lastName) && (
-                <small className="text-red-500 text-start">
-                  {state?.errors?.lastName || stepErrors?.lastName}
-                </small>
-              )}
-            </div>
-          </div>
-        )}
-
-        {currentStep === "credentials" && (
-          <div className="flex flex-col space-y-6">
-            <div className="flex flex-col items-start space-y-2 font-mono">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                name="email"
-                placeholder="john@example.com"
-                value={values.email}
-                onChange={handleInputChange}
-                required
-              />
-              {(state?.errors?.email || stepErrors?.email) && (
-                <small className="text-red-500 text-start">
-                  {state?.errors?.email || stepErrors?.email}
-                </small>
-              )}
-            </div>
-            <PasswordField
-              errors={state?.errors?.password || stepErrors?.password || []}
-              value={values.password}
-              onChange={handleInputChange}
-            />
-          </div>
-        )}
-
-        {currentStep === "professions" && (
-          <ProfessionStep
-            professions={values.professions}
-            onAdd={handleProfessionAdd}
-            onRemove={handleProfessionRemove}
-            errors={state?.errors?.professions || stepErrors?.professions}
-          />
-        )}
+        {stepConfig[currentStep].component}
 
         <div className="flex justify-between mt-6 space-x-3">
-          {currentStep !== "personalInfo" && (
+          {stepConfig[currentStep].prevStep && (
             <Button
               type="button"
               variant="outline"
@@ -306,14 +238,11 @@ const RegisterForm = () => {
             </Button>
           )}
 
-          {currentStep !== "professions" ? (
+          {stepConfig[currentStep].nextStep ? (
             <Button
               type="button"
               onClick={handleNextStep}
-              disabled={
-                (currentStep === "personalInfo" && !isPersonalInfoValid) ||
-                (currentStep === "credentials" && !isCredentialsValid)
-              }
+              disabled={!stepConfig[currentStep].isValid()}
               className="flex-1"
             >
               Next
@@ -322,7 +251,9 @@ const RegisterForm = () => {
             <Button
               type="submit"
               disabled={
-                pending || !isProfessionsValid || state?.status === "success"
+                pending ||
+                !stepConfig[currentStep].isValid() ||
+                state?.status === "success"
               }
               className="flex-1"
             >

@@ -40,30 +40,40 @@ const ProfessionStep = ({
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
       handleAddCustom();
     }
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCustomProfession(e.target.value);
+  };
+
+  const handleProfessionToggle = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    const profession = event.currentTarget.dataset.profession;
+
+    if (!profession) throw new Error("data-profession attribute is missing");
+
+    professions.includes(profession) ? onRemove(profession) : onAdd(profession);
+  };
+
   return (
     <div className="flex flex-col space-y-6">
       <div>
-        <Label className="text-sm font-medium">Select your skills</Label>
-        <p className="text-xs text-gray-600 mb-3">
-          Choose from common services
-        </p>
+        <h3 className="text-sm font-medium font-mono mb-2">
+          Select your skills
+        </h3>
         <div className="grid grid-cols-2 gap-2">
           {COMMON_PROFESSIONS.map(profession => (
             <button
               key={profession}
               type="button"
-              onClick={() =>
-                professions.includes(profession)
-                  ? onRemove(profession)
-                  : onAdd(profession)
-              }
+              data-profession={profession}
+              onClick={handleProfessionToggle}
               className={`p-2 text-sm rounded-md border transition-colors text-left ${
                 professions.includes(profession)
                   ? "bg-blue-50 border-blue-200 text-blue-800"
@@ -86,8 +96,8 @@ const ProfessionStep = ({
             type="text"
             placeholder="e.g., Pool Maintenance"
             value={customProfession}
-            onChange={e => setCustomProfession(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
             className="flex-1"
           />
           <Button
@@ -103,7 +113,7 @@ const ProfessionStep = ({
 
       {professions.length > 0 && (
         <div>
-          <Label className="text-sm font-medium">Selected skills</Label>
+          <h3 className="text-sm font-medium font-mono">Selected skills</h3>
           <div className="flex flex-wrap gap-2 mt-2">
             {professions.map(profession => (
               <span
