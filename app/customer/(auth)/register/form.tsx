@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { LoaderIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
-import { register } from "../../app/actions/register";
+import { register } from "../../../actions/register";
 import { AccountType } from "@/app/types";
 
 const RegisterForm = () => {

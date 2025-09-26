@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import RegisterForm from "@/components/form/register";
+import RegisterForm from "./form";
+import { Suspense } from "react";
+// import RegisterForm from "@/components/form/register";
 
 const RegisterHandyman = () => {
   return (
@@ -9,11 +11,13 @@ const RegisterHandyman = () => {
         Join as Handyman
       </h1>
       <p className="font-sans text-gray-600 mb-8">
-        Create your account to start painting for customers
+        Create your account to start providing handyman services for customers
       </p>
       <Card className="w-full border-0 shadow-none sm:shadow sm:border sm:max-w-sm">
         <CardContent className="p-0 sm:p-6">
-          <RegisterForm />
+          <Suspense fallback={<div>Loading...</div>}>
+            <RegisterForm />
+          </Suspense>
         </CardContent>
         <CardFooter className="flex-col mt-4">
           <p>

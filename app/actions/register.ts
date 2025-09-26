@@ -19,7 +19,26 @@ export const RegisterFormSchema = z.object({
     .regex(/[^a-zA-Z0-9]/, {
       message: "Contain at least one special character."
     })
-    .trim()
+    .trim(),
+  professions: z
+    .array(z.string())
+    .min(1, { message: "Please select at least one profession." })
+    .optional()
+});
+
+// Step-specific schemas
+export const Step1Schema = RegisterFormSchema.pick({
+  firstName: true,
+  lastName: true
+});
+
+export const Step2Schema = RegisterFormSchema.pick({
+  email: true,
+  password: true
+});
+
+export const Step3Schema = RegisterFormSchema.pick({
+  professions: true
 });
 
 type FormState =
@@ -29,18 +48,43 @@ type FormState =
         lastName?: string[];
         email?: string[];
         password?: string[];
+        professions?: string[];
       };
       message?: string;
       status?: string;
     }
   | undefined;
 
+// Step validation functions
+// Client-side validation functions
+export function validateStep1(data: { firstName: string; lastName: string }) {
+  return Step1Schema.safeParse(data);
+}
+
+export function validateStep2(data: { email: string; password: string }) {
+  return Step2Schema.safeParse(data);
+}
+
+export function validateStep3(data: { professions: string[] }) {
+  return Step3Schema.safeParse(data);
+}
+
 export async function register(state: FormState, formData: FormData) {
+  const professionsJson = formData.get("professions") as string;
+  let professions: string[] = [];
+
+  try {
+    professions = professionsJson ? JSON.parse(professionsJson) : [];
+  } catch {
+    professions = [];
+  }
+
   const validatedFields = RegisterFormSchema.safeParse({
     firstName: formData.get("firstName"),
     lastName: formData.get("lastName"),
     email: formData.get("email"),
-    password: formData.get("password")
+    password: formData.get("password"),
+    professions: professions
   });
 
   if (!validatedFields.success) {
@@ -52,7 +96,8 @@ export async function register(state: FormState, formData: FormData) {
     lastName: formData.get("lastName"),
     email: formData.get("email"),
     password: formData.get("password"),
-    accountType: formData.get("accountType")
+    accountType: formData.get("accountType"),
+    professions: professions
   };
 
   try {

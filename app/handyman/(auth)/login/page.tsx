@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import LoginForm from "@/components/form/login";
+import { Suspense } from "react";
 
 const LoginHandyman = () => {
   return (
@@ -12,7 +13,9 @@ const LoginHandyman = () => {
         <p className="font-sans text-gray-600 mb-8">
           Login to see who&apos;s requesting your services
         </p>
-        <LoginForm />
+        <Suspense fallback={<div>Loading...</div>}>
+          <LoginForm />
+        </Suspense>
       </CardContent>
       <CardFooter className="flex-col mt-4">
         <p>
