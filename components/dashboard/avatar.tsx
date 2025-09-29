@@ -1,4 +1,4 @@
-import { CalendarIcon, PaintRollerIcon } from "lucide-react";
+import { CalendarIcon, HardHatIcon } from "lucide-react";
 import { axiosInstance } from "@/app/lib/axios-instance";
 import { AccountType, type User } from "@/app/types";
 import { getToken } from "@/app/lib/sessions";
@@ -31,7 +31,7 @@ const AvatarCard = async ({ accountType }: AvatarProps) => {
           )}
         >
           {accountType === AccountType.HANDYMAN ? (
-            <PaintRollerIcon className="w-6 h-6 text-amber-600" />
+            <HardHatIcon className="w-6 h-6 text-amber-600" />
           ) : (
             <CalendarIcon className="w-6 h-6 text-green-600" />
           )}

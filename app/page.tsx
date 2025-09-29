@@ -1,4 +1,4 @@
-import { CalendarIcon, PaintRollerIcon } from "lucide-react";
+import { CalendarIcon, HardHatIcon } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
@@ -38,7 +38,7 @@ export default function Home() {
             aria-label="Register as a handyman to provide professional services to customers in your area"
           >
             <div className="p-4 w-fit mx-auto mb-4 bg-amber-100 rounded-full flex items-center justify-center group-hover:bg-amber-200 transition-colors">
-              <PaintRollerIcon className="w-8 h-8 text-amber-600" />
+              <HardHatIcon className="w-8 h-8 text-amber-600" />
             </div>
 
             <h3 className="text-2xl font-serif font-semibold text-gray-900 mb-2">

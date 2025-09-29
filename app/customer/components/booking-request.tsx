@@ -1,11 +1,13 @@
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
-  CardHeader
+  CardHeader,
+  CardTitle
 } from "@/components/ui/card";
 import { formatDate } from "date-fns";
-import { CalendarIcon, ClockIcon, PaintRollerIcon } from "lucide-react";
+import { CalendarIcon, ClockIcon, HardHatIcon } from "lucide-react";
 import { CancelRequestModal } from "./cancel-request";
 import { RequestSlotsStatus } from "@/app/types";
 
@@ -36,13 +38,16 @@ export default function BookingRequestCard({
 
   return (
     <Card className="w-full min-w-72 md:w-fit">
-      <CardHeader className="flex flex-row items-center space-x-3 py-4">
+      <CardHeader className="flex flex-row items-center space-x-2">
         <div className="p-2 w-fit bg-green-100 rounded-full group-hover:bg-green-200 transition-colors">
-          <PaintRollerIcon className="w-6 h-6 text-green-600" />
+          <HardHatIcon className="w-6 h-6 text-green-600" />
         </div>
-        <p className="font-serif font-bold text-gray-900">
-          {handyman?.name || "Unassigned"}
-        </p>
+        <div className="flex-col space-x-1">
+          <CardTitle>{handyman?.name || "Unassigned"}</CardTitle>
+          <CardDescription>
+            {handyman?.professions.join(", ") || "No profession specified"}
+          </CardDescription>
+        </div>
       </CardHeader>
       <CardContent className="space-y-2 pb-4 pt-0">
         <div className="flex items-center space-x-2 text-gray-700">
