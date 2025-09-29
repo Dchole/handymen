@@ -29,9 +29,18 @@ const PersonalInfoStep = ({
           value={firstName}
           onChange={onChange}
           required
+          aria-invalid={errors?.firstName ? "true" : "false"}
+          aria-describedby={errors?.firstName ? "first-name-error" : undefined}
         />
         {errors?.firstName && (
-          <small className="text-red-500 text-start">{errors.firstName}</small>
+          <small
+            id="first-name-error"
+            className="text-red-500 text-start"
+            role="alert"
+            aria-live="polite"
+          >
+            {errors.firstName.join(", ")}
+          </small>
         )}
       </div>
       <div className="flex flex-col items-start space-y-2 font-mono">
@@ -44,9 +53,18 @@ const PersonalInfoStep = ({
           value={lastName}
           onChange={onChange}
           required
+          aria-invalid={errors?.lastName ? "true" : "false"}
+          aria-describedby={errors?.lastName ? "last-name-error" : undefined}
         />
         {errors?.lastName && (
-          <small className="text-red-500 text-start">{errors.lastName}</small>
+          <small
+            id="last-name-error"
+            className="text-red-500 text-start"
+            role="alert"
+            aria-live="polite"
+          >
+            {errors.lastName.join(", ")}
+          </small>
         )}
       </div>
     </div>

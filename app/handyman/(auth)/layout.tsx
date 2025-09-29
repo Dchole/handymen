@@ -15,7 +15,7 @@ const AuthLayout = ({
         <ArrowLeftIcon className="w-4 h-4 mr-2" />
         Back to Home
       </Link>
-      <main className="text-center mb-8">{children}</main>
+      <div className="text-center mb-8">{children}</div>
     </div>
   );
 };
