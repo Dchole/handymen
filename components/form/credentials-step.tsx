@@ -30,9 +30,20 @@ const CredentialsStep = ({
           value={email}
           onChange={onChange}
           required
+          aria-invalid={errors?.email ? "true" : "false"}
+          aria-describedby={
+            errors?.email ? "credentials-email-error" : undefined
+          }
         />
         {errors?.email && (
-          <small className="text-red-500 text-start">{errors.email}</small>
+          <div
+            id="credentials-email-error"
+            className="text-red-500 text-start"
+            role="alert"
+            aria-live="polite"
+          >
+            {errors.email.join(", ")}
+          </div>
         )}
       </div>
       <PasswordField

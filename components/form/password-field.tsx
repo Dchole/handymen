@@ -39,10 +39,17 @@ const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
           name="password"
           type={isShowingPassword ? "text" : "password"}
           required
+          aria-invalid={errors.length > 0 ? "true" : "false"}
+          aria-describedby={errors.length > 0 ? "password-error" : undefined}
           {...inputProps}
         />
         {errors.length ? (
-          <div className="flex flex-col gap-1 justify-start">
+          <div
+            id="password-error"
+            className="flex flex-col gap-1 justify-start"
+            role="alert"
+            aria-live="polite"
+          >
             <small className="text-red-500 text-start">Password must:</small>
             <ul className="flex flex-col items-start justify-start">
               {errors.map(error => (

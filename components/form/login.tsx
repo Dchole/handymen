@@ -75,10 +75,21 @@ const LoginForm = () => {
               value={values.email}
               onChange={handleInputChange}
               required
+              aria-invalid={state?.errors?.email ? "true" : "false"}
+              aria-describedby={
+                state?.errors?.email ? "email-error" : undefined
+              }
             />
             {state?.errors?.email && (
-              <small className="text-red-500 text-start">
-                {state.errors.email}
+              <small
+                id="email-error"
+                className="text-red-500 text-start"
+                role="alert"
+                aria-live="polite"
+              >
+                {Array.isArray(state.errors.email)
+                  ? state.errors.email.join(", ")
+                  : state.errors.email}
               </small>
             )}
           </div>
