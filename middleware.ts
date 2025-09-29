@@ -8,6 +8,13 @@ const publicRoutes = [
   "/customer/register"
 ];
 
+function isRegistrationRoute(path: string): boolean {
+  return (
+    path.startsWith("/handyman/register") ||
+    path.startsWith("/customer/register")
+  );
+}
+
 export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
@@ -15,7 +22,8 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const isPublicRoute = publicRoutes.includes(path);
+  const isPublicRoute =
+    publicRoutes.includes(path) || isRegistrationRoute(path);
   const isHandymanRoute = path.startsWith("/handyman");
   const isCustomerRoute = path.startsWith("/customer");
 
@@ -44,7 +52,7 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  if (isPublicRoute && session) {
+  if (isPublicRoute && session && !isRegistrationRoute(path)) {
     const { searchParams } = request.nextUrl;
     const redirectUrl = searchParams.get("redirect");
     const fallbackUrl = isHandymanRoute ? "/handyman" : "/customer";

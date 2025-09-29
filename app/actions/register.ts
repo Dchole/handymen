@@ -26,7 +26,6 @@ export const RegisterFormSchema = z.object({
     .optional()
 });
 
-// Step-specific schemas
 export const PersonalInfoSchema = RegisterFormSchema.pick({
   firstName: true,
   lastName: true
@@ -55,8 +54,6 @@ type FormState =
     }
   | undefined;
 
-// Step validation functions
-// Client-side validation functions
 export function validatePersonalInfo(data: {
   firstName: string;
   lastName: string;
