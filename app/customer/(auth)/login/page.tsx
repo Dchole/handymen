@@ -1,6 +1,8 @@
 import LoginForm from "@/components/form/login";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import Link from "next/link";
+import { Suspense } from "react";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 
 const LoginCustomer = () => {
   return (
@@ -13,7 +15,9 @@ const LoginCustomer = () => {
       </p>
       <Card className="w-full border-0 shadow-none sm:shadow sm:border sm:max-w-sm">
         <CardContent className="p-0 sm:p-6">
-          <LoginForm />
+          <Suspense fallback={<LoadingSpinner />}>
+            <LoginForm />
+          </Suspense>
         </CardContent>
         <CardFooter className="flex-col mt-4 p-0 sm:pb-6 sm:px-6">
           <p>
