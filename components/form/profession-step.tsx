@@ -4,19 +4,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { HANDYMAN_PROFESSIONS } from "@/app/lib/professions";
 
-const COMMON_PROFESSIONS = [
-  "Plumber",
-  "Electrician",
-  "Painter",
-  "Carpenter",
-  "HVAC Technician",
-  "Locksmith",
-  "General Handyman",
-  "Tile Installer",
-  "Drywall Repair",
-  "Flooring Installer"
-];
+const COMMON_PROFESSIONS = HANDYMAN_PROFESSIONS;
 
 interface ProfessionStepProps {
   professions: string[];

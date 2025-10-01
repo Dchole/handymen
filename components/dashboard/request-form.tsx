@@ -7,15 +7,25 @@ import { bookSlot } from "@/app/actions/book-slot";
 import { Button } from "../ui/button";
 import TimeSelectorField from "../form/time-selector-field";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import { Label } from "../ui/label";
 import { formatDate } from "date-fns";
 import { sameDates } from "@/utils/same-dates";
 import { readableDateFormat } from "@/utils/readable-date-format";
+import { HANDYMAN_PROFESSIONS } from "@/app/lib/professions";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "../ui/select";
 
 const RequestForm = forwardRef<HTMLFormElement, {}>(function (_, ref) {
   const router = useRouter();
   const [state, action, pending] = useActionState(bookSlot, undefined);
   const [startDateTime, setStartDateTime] = useState("");
   const [endDateTime, setEndDateTime] = useState("");
+  const [profession, setProfession] = useState("");
 
   useEffect(() => {
     if (state?.status === "success") {
@@ -83,6 +93,32 @@ const RequestForm = forwardRef<HTMLFormElement, {}>(function (_, ref) {
         </Alert>
       )}
       <form className="space-y-4" ref={ref} action={action}>
+        <div className="flex flex-col items-start space-y-2 font-mono mb-6">
+          <Label htmlFor="profession">Handy man</Label>
+          <Select
+            value={profession}
+            onValueChange={setProfession}
+            name="profession"
+            required
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select a profession" />
+            </SelectTrigger>
+            <SelectContent>
+              {HANDYMAN_PROFESSIONS.map(prof => (
+                <SelectItem key={prof} value={prof}>
+                  {prof}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <input type="hidden" name="profession" value={profession} />
+          {state?.errors?.profession && (
+            <small className="text-red-500 text-start">
+              {state.errors.profession}
+            </small>
+          )}
+        </div>
         <TimeSelectorField
           name="startTime"
           legend="Start time"

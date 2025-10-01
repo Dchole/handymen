@@ -7,7 +7,8 @@ import { z } from "zod";
 
 const RequestFormSchema = z.object({
   startTime: z.string().nonempty("Start time is required").trim(),
-  endTime: z.string().nonempty("End time is required").trim()
+  endTime: z.string().nonempty("End time is required").trim(),
+  profession: z.string().nonempty("Profession is required").trim()
 });
 
 type FormState =
@@ -15,6 +16,7 @@ type FormState =
       errors?: {
         startTime?: string[];
         endTime?: string[];
+        profession?: string[];
       };
       message?: string;
       status?: string;
@@ -24,11 +26,13 @@ type FormState =
 export async function bookSlot(_: FormState, formData: FormData) {
   const startTime = formData.get("startTime");
   const endTime = formData.get("endTime");
+  const profession = formData.get("profession");
   const token = await getToken();
 
   const validatedFields = RequestFormSchema.safeParse({
     startTime,
-    endTime
+    endTime,
+    profession
   });
 
   if (!validatedFields.success) {
@@ -38,7 +42,7 @@ export async function bookSlot(_: FormState, formData: FormData) {
   try {
     await axiosInstance.post(
       "/booking-requests",
-      { startTime, endTime },
+      { startTime, endTime, profession },
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
