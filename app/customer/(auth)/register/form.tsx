@@ -8,13 +8,12 @@ import { Label } from "@/components/ui/label";
 import { LoaderIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
-import { register } from "../../../actions/register";
-import { AccountType } from "@/app/types";
+import { customerRegister } from "@/app/actions/customer-register";
 
 const RegisterForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [state, action, pending] = useActionState(register, undefined);
+  const [state, action, pending] = useActionState(customerRegister, undefined);
 
   const [values, setValues] = useState({
     firstName: "",
@@ -55,12 +54,6 @@ const RegisterForm = () => {
       )}
       <form action={action}>
         <div className="flex flex-col space-y-6">
-          <input
-            type="text"
-            name="accountType"
-            defaultValue={AccountType.CUSTOMER}
-            hidden
-          />
           <div className="flex flex-col items-start space-y-2 font-mono">
             <Label htmlFor="first_name">First name</Label>
             <Input
@@ -119,6 +112,7 @@ const RegisterForm = () => {
           />
         </div>
         <Button
+          type="submit"
           className="w-full mt-6"
           disabled={pending || state?.status === "success"}
         >

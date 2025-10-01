@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { setRegistrationData } from "@/lib/registration-steps";
-import { validateCredentials } from "@/app/actions/register";
+import { validateCredentials } from "@/app/actions/handyman-register";
 
 export async function POST(request: NextRequest) {
   try {

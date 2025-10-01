@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { clearRegistrationData } from "@/lib/registration-steps";
-import { register } from "@/app/actions/register";
+import { register } from "@/app/actions/handyman-register";
 
 export async function POST(request: NextRequest) {
   try {

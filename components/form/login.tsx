@@ -9,16 +9,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AccountType } from "@/app/types";
-import { login } from "@/app/actions/login";
+import { login as handymanLogin } from "@/app/actions/handyman-login";
+import { login as customerLogin } from "@/app/actions/customer-login";
 
 const LoginForm = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [state, action, pending] = useActionState(login, undefined);
   const accountType = pathname.startsWith("/customer")
     ? AccountType.CUSTOMER
     : AccountType.HANDYMAN;
+  const loginAction =
+    accountType === AccountType.CUSTOMER ? customerLogin : handymanLogin;
+  const [state, action, pending] = useActionState(loginAction, undefined);
 
   const [values, setValues] = useState({
     email: "",
