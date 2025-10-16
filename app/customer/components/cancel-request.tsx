@@ -1,4 +1,4 @@
-import { axiosInstance } from "@/app/lib/axios-instance";
+import { cancelBookingRequest } from "@/app/actions/booking-requests";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,8 +12,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { RequestSlotsStatus } from "@/app/types";
-import { revalidatePath } from "next/cache";
-import { getToken } from "@/app/lib/sessions";
 
 interface CancelRequestModalProps {
   id: string;
@@ -24,12 +22,12 @@ export function CancelRequestModal({ id, status }: CancelRequestModalProps) {
   const confirmCancel = async () => {
     "use server";
 
-    const token = await getToken();
-    await axiosInstance.delete(`/booking-requests/${id}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    const result = await cancelBookingRequest(id);
 
-    revalidatePath("/customer");
+    if (result.status === "error") {
+      console.error("Cancel failed:", result.message);
+      // You might want to show a toast notification here
+    }
   };
 
   return (
