@@ -2,11 +2,11 @@ import "server-only";
 import { cookies } from "next/headers";
 import { Session } from "../types";
 
-export async function createSession(session: Session) {
+export async function createSession(token: string) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
   const cookieStore = await cookies();
 
-  cookieStore.set("session", JSON.stringify(session), {
+  cookieStore.set("session", JSON.stringify({ token }), {
     httpOnly: true,
     secure: true,
     expires: expiresAt,
@@ -29,12 +29,4 @@ export async function getToken() {
     : { token: "" };
 
   return sessionValue.token;
-}
-
-export async function getAccountType() {
-  const cookieStore = await cookies();
-  const session = cookieStore.get("session");
-  const sessionValue: Session = session?.value ? JSON.parse(session.value) : {};
-
-  return sessionValue.accountType;
 }

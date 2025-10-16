@@ -12,7 +12,6 @@ export type LoginResponse = {
 
 export type Session = {
   token: string;
-  accountType: AccountType;
 };
 
 export type Profile = {
