@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { forwardRef, useActionState, useEffect, useState } from "react";
 import { LoaderIcon } from "lucide-react";
-import { bookSlot } from "@/app/actions/book-slot";
+import { createBookingRequest } from "@/app/actions/booking-requests";
 import { Button } from "../ui/button";
 import TimeSelectorField from "../form/time-selector-field";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
@@ -22,7 +22,10 @@ import {
 
 const RequestForm = forwardRef<HTMLFormElement, {}>(function (_, ref) {
   const router = useRouter();
-  const [state, action, pending] = useActionState(bookSlot, undefined);
+  const [state, action, pending] = useActionState(
+    createBookingRequest,
+    undefined
+  );
   const [startDateTime, setStartDateTime] = useState("");
   const [endDateTime, setEndDateTime] = useState("");
   const [profession, setProfession] = useState("");
@@ -55,7 +58,7 @@ const RequestForm = forwardRef<HTMLFormElement, {}>(function (_, ref) {
           <AlertTitle className="text-start leading-normal text-base">
             {state.message}
           </AlertTitle>
-          {!!state.info.recommendation && (
+          {state.info?.recommendation && (
             <AlertDescription className="text-start mt-2 text-sm text-amber-700 bg-amber-100 p-2 rounded">
               The next available time slot for you is in
               <br />
