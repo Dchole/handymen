@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id         String   @id @default(uuid())
+    first_name String
+    last_name  String
+    email      String   @unique
+    password   String
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    handyman_profile HandymanProfile?
+    customer_profile CustomerProfile?
+
+    @@map("users")
+}
+
+model HandymanProfile {
+    id              String          @id @default(uuid())
+    user_id         String          @unique
+    professions     String[]
+    user            User            @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    available_slots AvailableSlot[]
+    RequestSlots    RequestSlots[]
+
+    @@map("handyman_profiles")
+}
+
+model AvailableSlot {
+    id                  String   @id @default(uuid())
+    handyman_profile_id String
+    start_time          DateTime
+    end_time            DateTime
+
+    handyman_profile HandymanProfile @relation(fields: [handyman_profile_id], references: [id], onDelete: Cascade)
+
+    @@map("available_slots")
+}
+
+model CustomerProfile {
+    id            String         @id @default(uuid())
+    user_id       String         @unique
+    request_slots RequestSlots[]
+
+    user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+    @@map("customer_profiles")
+}
+
+model RequestSlots {
+    id                   String             @id @default(uuid())
+    customer_profile_id  String
+    start_time           DateTime
+    end_time             DateTime
+    profession           String
+    status               RequestSlotsStatus @default(UNASSIGNED)
+    assigned_handyman_id String?
+    created_at           DateTime           @default(now())
+    updated_at           DateTime           @updatedAt
+
+    customer_profile  CustomerProfile  @relation(fields: [customer_profile_id], references: [id], onDelete: Cascade)
+    assigned_handyman HandymanProfile? @relation(fields: [assigned_handyman_id], references: [id])
+
+    @@map("booking_requests")
+}
+
+enum RequestSlotsStatus {
+    UNASSIGNED
+    CONFIRMED
+    CANCELLED
+    COMPLETED
+}

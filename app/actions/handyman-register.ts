@@ -1,9 +1,10 @@
 "use server";
 
-import { axiosInstance } from "@/app/lib/axios-instance";
+import { prisma } from "@/lib/prisma";
 import { clearRegistrationData } from "@/lib/registration-steps";
 import { RegisterFormSchema } from "../schemas/register";
 import { AccountType } from "../types";
+import bcrypt from "bcryptjs";
 
 type FormState =
   | {
@@ -51,15 +52,35 @@ export async function register(state: FormState, formData: FormData) {
   };
 
   try {
-    await axiosInstance.post("/users", payload);
+    const hashedPassword = await bcrypt.hash(payload.password as string, 12);
+
+    const result = await prisma.$transaction(async tx => {
+      const user = await tx.user.create({
+        data: {
+          first_name: payload.firstName as string,
+          last_name: payload.lastName as string,
+          email: payload.email as string,
+          password: hashedPassword
+        }
+      });
+
+      const handymanProfile = await tx.handymanProfile.create({
+        data: {
+          user_id: user.id,
+          professions: professions
+        }
+      });
+
+      return { user, handymanProfile };
+    });
 
     await clearRegistrationData();
 
     return { message: "Registration successful!", status: "success" };
   } catch (error: any) {
-    if (error.response?.data?.message) {
+    if (error.code === "P2002" && error.meta?.target?.includes("email")) {
       return {
-        message: error.response.data.message,
+        message: "An account with this email already exists.",
         status: "error"
       };
     }
