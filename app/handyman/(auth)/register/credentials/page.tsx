@@ -2,6 +2,7 @@
 
 import { useState, useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -60,10 +61,6 @@ export default function Credentials() {
     }
   }, [state, router]);
 
-  const handleBack = () => {
-    router.push("/handyman/register/personal-info");
-  };
-
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValues(prev => ({
       ...prev,
@@ -121,14 +118,8 @@ export default function Credentials() {
         </div>
 
         <div className="flex space-x-2 pt-4">
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full"
-            onClick={handleBack}
-            disabled={pending}
-          >
-            Previous
+          <Button asChild type="button" variant="outline" className="w-full">
+            <Link href="/handyman/register/personal-info">Previous</Link>
           </Button>
           <Button className="w-full" disabled={pending}>
             Next

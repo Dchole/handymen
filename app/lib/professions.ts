@@ -5,10 +5,10 @@ export const HANDYMAN_PROFESSIONS = [
   "Carpenter",
   "HVAC Technician",
   "Locksmith",
-  "General Handyman",
   "Tile Installer",
   "Drywall Repair",
-  "Flooring Installer"
-] as const;
+  "Flooring Installer",
+  "General Handyman"
+];
 
 export type HandymanProfession = (typeof HANDYMAN_PROFESSIONS)[number];

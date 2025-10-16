@@ -2,17 +2,22 @@
 
 import { useState, useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { HANDYMAN_PROFESSIONS } from "@/app/lib/professions";
 import { register } from "@/app/actions/handyman-register";
 import { AccountType } from "@/app/types";
 import { validateProfessions } from "@/app/schemas/register";
+import { XIcon } from "lucide-react";
 
 export default function Professions() {
   const router = useRouter();
   const [selectedProfessions, setSelectedProfessions] = useState<string[]>([]);
+  const [customProfessions, setCustomProfessions] = useState<string>("");
   const [errors, setErrors] = useState<{
     professions?: string[];
   }>({});
@@ -38,9 +43,17 @@ export default function Professions() {
   };
 
   const handleSubmit = () => {
+    // Combine selected professions with custom ones
+    const customProfs = customProfessions
+      .split(",")
+      .map(p => p.trim())
+      .filter(p => p.length > 0);
+
+    const allProfessions = [...selectedProfessions, ...customProfs];
+
     // Validate professions
     const validation = validateProfessions({
-      professions: selectedProfessions
+      professions: allProfessions
     });
 
     if (!validation.success) {
@@ -53,13 +66,18 @@ export default function Professions() {
     // Create FormData with professions (other data comes from cookies)
     const formData = new FormData();
     formData.append("accountType", AccountType.HANDYMAN);
-    formData.append("professions", JSON.stringify(selectedProfessions));
+    formData.append("professions", JSON.stringify(allProfessions));
 
     action(formData);
   };
 
-  const handleBack = () => {
-    router.push("/handyman/register/credentials");
+  const handleRemoveCustomProfession = (professionToRemove: string) => {
+    const currentCustom = customProfessions
+      .split(",")
+      .map(p => p.trim())
+      .filter(p => p.length > 0 && p !== professionToRemove);
+
+    setCustomProfessions(currentCustom.join(", "));
   };
 
   return (
@@ -73,7 +91,8 @@ export default function Professions() {
         </p>
       </div>
 
-      <div className="space-y-2 max-h-64 overflow-y-auto">
+      {/* Two-column grid for professions */}
+      <div className="grid grid-cols-2 gap-2 mb-6">
         {HANDYMAN_PROFESSIONS.map(profession => (
           <div
             key={profession}
@@ -87,7 +106,7 @@ export default function Professions() {
             />
             <label
               htmlFor={profession}
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex-1"
+              className="text-sm text-start font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex-1"
             >
               {profession}
             </label>
@@ -95,15 +114,65 @@ export default function Professions() {
         ))}
       </div>
 
-      {selectedProfessions.length > 0 && (
+      {/* Custom professions input */}
+      <div className="space-y-3 mb-6">
         <div>
-          <p className="text-sm font-medium mb-2">Selected professions:</p>
-          <div className="flex flex-wrap gap-1">
+          <Label htmlFor="customProfessions" className="text-sm font-medium">
+            Add Custom Services
+          </Label>
+          <p className="text-xs text-gray-600 mb-2">
+            Enter additional services separated by commas (e.g., "Pool Cleaning,
+            Pet Sitting, Tutoring")
+          </p>
+          <Input
+            id="customProfessions"
+            value={customProfessions}
+            onChange={e => setCustomProfessions(e.target.value)}
+            placeholder="Enter custom services separated by commas..."
+          />
+        </div>
+      </div>
+
+      {/* Display selected professions */}
+      {(selectedProfessions.length > 0 || customProfessions.trim()) && (
+        <div className="mb-4">
+          <p className="text-sm font-medium mb-3">Selected Services:</p>
+          <div className="flex flex-wrap gap-2">
+            {/* Pre-defined professions */}
             {selectedProfessions.map(profession => (
-              <Badge key={profession} variant="secondary">
+              <Badge
+                key={profession}
+                variant="secondary"
+                className="flex items-center gap-1"
+              >
                 {profession}
+                <XIcon
+                  className="h-3 w-3 cursor-pointer hover:text-red-500"
+                  onClick={e => {
+                    e.stopPropagation();
+                    handleProfessionToggle(profession);
+                  }}
+                />
               </Badge>
             ))}
+            {/* Custom professions */}
+            {customProfessions.split(",").map(profession => {
+              const trimmed = profession.trim();
+              if (!trimmed) return null;
+              return (
+                <Badge
+                  key={trimmed}
+                  variant="outline"
+                  className="flex items-center gap-1"
+                >
+                  {trimmed}
+                  <XIcon
+                    className="h-3 w-3 cursor-pointer hover:text-red-500"
+                    onClick={() => handleRemoveCustomProfession(trimmed)}
+                  />
+                </Badge>
+              );
+            })}
           </div>
         </div>
       )}
@@ -122,14 +191,17 @@ export default function Professions() {
         </p>
       )}
 
-      <div className="flex justify-between pt-4">
-        <Button variant="outline" onClick={handleBack} disabled={pending}>
-          Previous
+      <div className="flex justify-between pt-4 space-x-2">
+        <Button asChild variant="outline" type="button" className="w-full">
+          <Link href="/handyman/register/credentials">Previous</Link>
         </Button>
         <Button
           onClick={handleSubmit}
-          className="bg-green-600 hover:bg-green-700"
-          disabled={pending || selectedProfessions.length === 0}
+          className="bg-green-600 hover:bg-green-700 w-full"
+          disabled={
+            pending ||
+            (selectedProfessions.length === 0 && !customProfessions.trim())
+          }
         >
           {pending ? "Creating Account..." : "Complete Registration"}
         </Button>
