@@ -37,8 +37,6 @@ export async function register(state: FormState, formData: FormData) {
     professions: professions
   });
 
-  console.log({ validatedFields });
-
   if (!validatedFields.success) {
     return { errors: validatedFields.error.flatten().fieldErrors };
   }
@@ -51,8 +49,6 @@ export async function register(state: FormState, formData: FormData) {
     accountType: AccountType.HANDYMAN,
     professions: professions
   };
-
-  console.log({ payload });
 
   try {
     await axiosInstance.post("/users", payload);

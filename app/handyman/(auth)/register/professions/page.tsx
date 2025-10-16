@@ -37,7 +37,6 @@ export default function Professions() {
     const loadSavedData = async () => {
       const savedData = await getAllRegistrationData();
       if (savedData) {
-        console.log({ savedData });
         setValues(prev => ({ ...prev, ...savedData }));
       }
     };
