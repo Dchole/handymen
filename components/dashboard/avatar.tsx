@@ -26,7 +26,12 @@ const AvatarCard = async ({ accountType }: AvatarProps) => {
 
   return (
     <div className="flex items-center space-x-4">
-      <div className="flex flex-row items-start space-x-3 py-4">
+      <div
+        className={cn(
+          "flex flex-row space-x-3 py-4",
+          accountType === AccountType.HANDYMAN ? "items-start" : "items-center"
+        )}
+      >
         <div
           className={cn(
             "p-2 w-fit rounded-full transition-colors",

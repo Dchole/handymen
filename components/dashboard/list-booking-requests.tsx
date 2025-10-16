@@ -33,7 +33,7 @@ const ListBookingRequests = async ({
   let hasPrevPage = false;
   let hasNextPage = false;
   let totalPages = 1;
-  let bookingRequests: any[] = [];
+  let bookingRequests: (typeof result)["data"] = [];
 
   if (result.status === "success" && result.data) {
     bookingRequests = result.data;
@@ -70,7 +70,7 @@ const ListBookingRequests = async ({
         </div>
       ) : (
         <div className="flex flex-wrap gap-8">
-          {bookingRequests.map((request: any) => (
+          {bookingRequests.map(request => (
             <BookingRequestCard
               id={request.id}
               key={request.id}
@@ -78,6 +78,7 @@ const ListBookingRequests = async ({
               endTime={request.end_time}
               handyman={request.handyman}
               status={request.status}
+              profession={request.profession}
             />
           ))}
         </div>

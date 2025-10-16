@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle
 } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { formatDate } from "date-fns";
 import { CalendarIcon, ClockIcon, HardHatIcon } from "lucide-react";
 import { CancelRequestModal } from "./cancel-request";
@@ -17,6 +18,7 @@ interface BookingRequestCardProps {
   startTime: string;
   endTime: string;
   status: RequestSlotsStatus;
+  profession: string;
 }
 
 const statusColors: Record<RequestSlotsStatus, string> = {
@@ -29,6 +31,7 @@ const statusColors: Record<RequestSlotsStatus, string> = {
 export default function BookingRequestCard({
   id,
   handyman,
+  profession,
   startTime,
   endTime,
   status
@@ -42,10 +45,15 @@ export default function BookingRequestCard({
         <div className="p-2 w-fit bg-green-100 rounded-full group-hover:bg-green-200 transition-colors">
           <HardHatIcon className="w-6 h-6 text-green-600" />
         </div>
-        <div className="flex-col space-x-1">
+        <div className="flex flex-col space-y-1.5">
           <CardTitle>{handyman?.name || "Unassigned"}</CardTitle>
           <CardDescription>
-            {handyman?.professions.join(", ") || "No profession specified"}
+            <Badge
+              variant="secondary"
+              className="text-xs bg-green-50 text-green-700 border-green-200 w-fit"
+            >
+              {profession}
+            </Badge>
           </CardDescription>
         </div>
       </CardHeader>
