@@ -5,6 +5,8 @@ import AvatarCard from "@/components/dashboard/avatar";
 import { AccountType } from "@/app/types";
 import ListBookingRequests from "@/components/dashboard/list-booking-requests";
 
+export const dynamic = "force-dynamic";
+
 const BookingRequests = ({
   searchParams
 }: {

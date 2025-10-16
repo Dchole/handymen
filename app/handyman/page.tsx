@@ -5,6 +5,8 @@ import ListTimeSlots from "@/components/dashboard/list-time-slots";
 import { Button } from "@/components/ui/button";
 import { AccountType } from "@/app/types";
 
+export const dynamic = "force-dynamic";
+
 const Availability = ({
   searchParams
 }: {
