@@ -12,7 +12,15 @@ export const saveRegistrationData = async (step: string, data: any) => {
   });
 };
 
-export const getRegistrationData = async (step: string) => {
+export const getRegistrationData = async (
+  step: string
+): Promise<{
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  professions: string[];
+} | null> => {
   const cookieStore = await cookies();
   const data = cookieStore.get(`registration-${step}`);
   return data ? JSON.parse(data.value) : null;
@@ -25,9 +33,9 @@ export const getAllRegistrationData = async () => {
   const professions = cookieStore.get("registration-professions");
 
   return {
-    personalInfo: personalInfo ? JSON.parse(personalInfo.value) : null,
-    credentials: credentials ? JSON.parse(credentials.value) : null,
-    professions: professions ? JSON.parse(professions.value) : null
+    ...(personalInfo ? JSON.parse(personalInfo.value) : null),
+    ...(credentials ? JSON.parse(credentials.value) : null),
+    ...(professions ? JSON.parse(professions.value) : null)
   };
 };
 

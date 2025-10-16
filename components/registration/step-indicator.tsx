@@ -1,5 +1,6 @@
 "use client";
 
+import { Fragment } from "react";
 import { cn } from "@/app/lib/utils";
 import { CheckIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -44,7 +45,7 @@ export default function RegistrationStepIndicator() {
           const isUpcoming = step.number > currentStep;
 
           return (
-            <>
+            <Fragment key={step.number}>
               <div key={step.number} className="flex items-center flex-1">
                 <div className="flex flex-col items-center text-center">
                   <div
@@ -104,7 +105,7 @@ export default function RegistrationStepIndicator() {
                   </div>
                 )}
               </>
-            </>
+            </Fragment>
           );
         })}
       </div>

@@ -39,6 +39,8 @@ export const ProfessionsSchema = RegisterFormSchema.pick({
   professions: true
 });
 
+export type RegisterFormData = z.infer<typeof RegisterFormSchema>;
+
 export function validatePersonalInfo(data: {
   firstName: string;
   lastName: string;

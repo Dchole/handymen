@@ -3,6 +3,7 @@
 import { axiosInstance } from "@/app/lib/axios-instance";
 import { clearRegistrationData } from "@/lib/registration-steps";
 import { RegisterFormSchema } from "../schemas/register";
+import { AccountType } from "../types";
 
 type FormState =
   | {
@@ -36,6 +37,8 @@ export async function register(state: FormState, formData: FormData) {
     professions: professions
   });
 
+  console.log({ validatedFields });
+
   if (!validatedFields.success) {
     return { errors: validatedFields.error.flatten().fieldErrors };
   }
@@ -45,9 +48,11 @@ export async function register(state: FormState, formData: FormData) {
     lastName: formData.get("lastName"),
     email: formData.get("email"),
     password: formData.get("password"),
-    accountType: formData.get("accountType"),
+    accountType: AccountType.HANDYMAN,
     professions: professions
   };
+
+  console.log({ payload });
 
   try {
     await axiosInstance.post("/users", payload);
