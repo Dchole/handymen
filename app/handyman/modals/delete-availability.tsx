@@ -1,5 +1,4 @@
-import { axiosInstance } from "@/app/lib/axios-instance";
-import { getToken } from "@/app/lib/sessions";
+import { deleteAvailabilitySlot } from "@/app/actions/availability";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,7 +12,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Trash2Icon } from "lucide-react";
-import { revalidatePath } from "next/cache";
 
 interface DeleteAvailabilityModalProps {
   id: string;
@@ -22,12 +20,11 @@ interface DeleteAvailabilityModalProps {
 export function DeleteAvailabilityModal({ id }: DeleteAvailabilityModalProps) {
   const confirmDelete = async () => {
     "use server";
-    const token = await getToken();
-    await axiosInstance.delete(`/availability/${id}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    const result = await deleteAvailabilitySlot(id);
 
-    revalidatePath("/handyman");
+    if (result.status === "error") {
+      console.error("Delete failed:", result.message);
+    }
   };
 
   return (

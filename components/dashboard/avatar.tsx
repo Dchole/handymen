@@ -1,7 +1,6 @@
 import { CalendarIcon, HardHatIcon } from "lucide-react";
-import { axiosInstance } from "@/app/lib/axios-instance";
+import { getCurrentUser } from "@/app/actions/user";
 import { AccountType, type User } from "@/app/types";
-import { getToken } from "@/app/lib/sessions";
 import { cn } from "@/app/lib/utils";
 import LogoutButton from "./logout-button";
 
@@ -10,14 +9,19 @@ interface AvatarProps {
 }
 
 const AvatarCard = async ({ accountType }: AvatarProps) => {
-  const token = await getToken();
+  const result = await getCurrentUser(accountType);
 
-  const user = await axiosInstance.get<User>(
-    `/auth/me?account-type=${accountType}`,
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
+  if (result.status === "error" || !result.data) {
+    return (
+      <div className="flex items-center space-x-4">
+        <p className="text-red-600">Error loading user data</p>
+        <LogoutButton accountType={accountType} />
+      </div>
+    );
+  }
 
-  const name = `${user.data.first_name} ${user.data.last_name}`;
+  const user = result.data;
+  const name = `${user.first_name} ${user.last_name}`;
 
   return (
     <div className="flex items-center space-x-4">
