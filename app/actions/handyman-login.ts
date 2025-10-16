@@ -5,6 +5,7 @@ import { z } from "zod";
 import { sign } from "jsonwebtoken";
 import { prisma } from "@/lib/prisma";
 import { createSession } from "@/app/lib/sessions";
+import { AccountType } from "../types";
 
 const LoginFormSchema = z.object({
   email: z.email({ message: "Please enter a valid email." }).trim(),
@@ -65,7 +66,7 @@ export async function login(state: FormState, formData: FormData) {
     const payload = { sub: user.id };
     const token = sign(payload, process.env.JWT_SECRET!, { expiresIn: "7d" });
 
-    await createSession(token);
+    await createSession({ token, accountType: AccountType.HANDYMAN });
 
     return { message: "Login successful!", status: "success" };
   } catch (error: any) {

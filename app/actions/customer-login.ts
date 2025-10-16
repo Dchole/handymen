@@ -5,6 +5,7 @@ import { sign } from "jsonwebtoken";
 import { CustomerLoginFormSchema } from "@/app/lib/customer-schemas";
 import { prisma } from "@/lib/prisma";
 import { createSession } from "@/app/lib/sessions";
+import { AccountType } from "../types";
 
 type FormState =
   | {
@@ -57,7 +58,7 @@ export async function login(state: FormState, formData: FormData) {
     const payload = { sub: user.id };
     const token = sign(payload, process.env.JWT_SECRET!, { expiresIn: "7d" });
 
-    await createSession(token);
+    await createSession({ token, accountType: AccountType.CUSTOMER });
 
     return { message: "Login successful!", status: "success" };
   } catch (error: any) {

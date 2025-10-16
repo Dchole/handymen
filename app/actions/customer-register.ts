@@ -1,8 +1,9 @@
 "use server";
 
-import { axiosInstance } from "@/app/lib/axios-instance";
+import { prisma } from "@/lib/prisma";
 import { AccountType } from "@/app/types";
 import { CustomerRegisterFormSchema } from "@/app/lib/customer-schemas";
+import bcrypt from "bcryptjs";
 
 type FormState =
   | {
@@ -38,13 +39,39 @@ export async function customerRegister(state: FormState, formData: FormData) {
   };
 
   try {
-    await axiosInstance.post("/users", payload);
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(payload.password as string, 12);
+
+    // Create user and customer profile in a transaction
+    const result = await prisma.$transaction(async tx => {
+      // Create the user
+      const user = await tx.user.create({
+        data: {
+          first_name: payload.firstName as string,
+          last_name: payload.lastName as string,
+          email: payload.email as string,
+          password: hashedPassword
+        }
+      });
+
+      // Create the customer profile
+      const customerProfile = await tx.customerProfile.create({
+        data: {
+          user_id: user.id
+        }
+      });
+
+      return { user, customerProfile };
+    });
 
     return { message: "Registration successful!", status: "success" };
   } catch (error: any) {
-    if (error.response?.data?.message) {
+    console.error("Customer registration error:", error);
+
+    // Handle unique constraint errors (duplicate email)
+    if (error.code === "P2002" && error.meta?.target?.includes("email")) {
       return {
-        message: error.response.data.message,
+        message: "An account with this email already exists.",
         status: "error"
       };
     }
