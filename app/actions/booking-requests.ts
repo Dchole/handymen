@@ -6,7 +6,6 @@ import { verify } from "jsonwebtoken";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
-// Zod schema for query validation
 const BookingRequestsQuerySchema = z.object({
   start_time: z.string().nullable().optional(),
   end_time: z.string().nullable().optional(),
@@ -21,7 +20,6 @@ const BookingRequestsQuerySchema = z.object({
   profession: z.string().nullable().optional()
 });
 
-// Helper function to get user ID from JWT token
 async function getUserId(): Promise<string | null> {
   try {
     const token = await getToken();
@@ -35,7 +33,6 @@ async function getUserId(): Promise<string | null> {
   }
 }
 
-// Format booking request to match frontend expectations
 function formatBookingRequest(bookingRequest: any) {
   return {
     id: bookingRequest.id,
@@ -54,7 +51,6 @@ function formatBookingRequest(bookingRequest: any) {
   };
 }
 
-// Build where clause for filtering
 function buildWhereClause(query: any) {
   const whereClause: any = {};
 
@@ -77,7 +73,6 @@ function buildWhereClause(query: any) {
   return whereClause;
 }
 
-// Get current user's booking requests
 export async function getMyBookingRequests(searchParams: URLSearchParams) {
   const validatedQuery = BookingRequestsQuerySchema.safeParse({
     start_time: searchParams.get("start_time"),
@@ -109,7 +104,6 @@ export async function getMyBookingRequests(searchParams: URLSearchParams) {
   const { page, limit, sort, sortBy, ...filterParams } = validatedQuery.data;
 
   try {
-    // Check if user has customer profile
     const user = await prisma.user.findUnique({
       where: { id: userId },
       include: {
@@ -181,7 +175,6 @@ export async function getMyBookingRequests(searchParams: URLSearchParams) {
   }
 }
 
-// Cancel a booking request
 export async function cancelBookingRequest(id: string) {
   const userId = await getUserId();
   if (!userId) {
@@ -223,7 +216,6 @@ export async function cancelBookingRequest(id: string) {
   }
 }
 
-// Zod schema for booking request form
 const BookingRequestFormSchema = z.object({
   startTime: z.string().nonempty("Start time is required").trim(),
   endTime: z.string().nonempty("End time is required").trim(),
@@ -243,7 +235,6 @@ type FormState =
     }
   | undefined;
 
-// Helper function to find available handyman
 async function findAvailableHandyman(
   startTime: Date,
   endTime: Date,
@@ -264,13 +255,11 @@ async function findAvailableHandyman(
   });
 }
 
-// Helper function to find closest available slot
 async function findHandymanClosestToRequestedTimeSlot(
   startTime: Date,
   endTime: Date,
   profession: string
 ) {
-  // This is a simplified version - the full implementation would be more complex
   const availableSlot = await prisma.availableSlot.findFirst({
     where: {
       handyman_profile: {
@@ -314,7 +303,6 @@ async function findHandymanClosestToRequestedTimeSlot(
   return null;
 }
 
-// Create a booking request
 export async function createBookingRequest(
   state: FormState,
   formData: FormData
@@ -345,7 +333,6 @@ export async function createBookingRequest(
   const startTime = new Date(startTimeStr);
   const endTime = new Date(endTimeStr);
 
-  // Validation
   if (startTime >= endTime) {
     return {
       message: "Start time must be before end time",
@@ -361,7 +348,6 @@ export async function createBookingRequest(
   }
 
   try {
-    // Check if user has customer profile
     const user = await prisma.user.findUnique({
       where: { id: userId },
       include: { customer_profile: true }
@@ -374,7 +360,6 @@ export async function createBookingRequest(
       };
     }
 
-    // Find available handyman
     const availableHandyman = await findAvailableHandyman(
       startTime,
       endTime,
@@ -382,7 +367,6 @@ export async function createBookingRequest(
     );
 
     if (!availableHandyman) {
-      // Try to find closest available slot
       const closestSlot = await findHandymanClosestToRequestedTimeSlot(
         startTime,
         endTime,
@@ -414,7 +398,6 @@ export async function createBookingRequest(
       };
     }
 
-    // Create booking request
     const booking = await prisma.requestSlots.create({
       data: {
         customer_profile_id: user.customer_profile.id,

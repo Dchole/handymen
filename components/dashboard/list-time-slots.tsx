@@ -19,7 +19,6 @@ const ListTimeSlots = async ({ searchParams }: ListTimeSlotsProps) => {
   const page = queries.page || 1;
   const limit = queries.limit || 10;
 
-  // Create URLSearchParams for the action
   const searchParamsObj = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString()

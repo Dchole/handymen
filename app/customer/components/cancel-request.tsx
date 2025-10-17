@@ -26,7 +26,7 @@ export function CancelRequestModal({ id, status }: CancelRequestModalProps) {
 
     if (result.status === "error") {
       console.error("Cancel failed:", result.message);
-      // You might want to show a toast notification here
+      // TODO: show a toast notification here
     }
   };
 

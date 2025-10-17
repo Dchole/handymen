@@ -5,7 +5,6 @@ import { getToken } from "@/app/lib/sessions";
 import { verify } from "jsonwebtoken";
 import { AccountType } from "@/app/types";
 
-// Helper function to get user ID from JWT token
 async function getUserId(): Promise<string | null> {
   try {
     const token = await getToken();
@@ -56,7 +55,6 @@ export async function getCurrentUser(accountType: AccountType) {
       };
     }
 
-    // Remove password from response
     const { password, ...userWithoutPassword } = userDetails;
 
     return {

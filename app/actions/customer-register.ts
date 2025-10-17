@@ -39,12 +39,9 @@ export async function customerRegister(state: FormState, formData: FormData) {
   };
 
   try {
-    // Hash the password
     const hashedPassword = await bcrypt.hash(payload.password as string, 12);
 
-    // Create user and customer profile in a transaction
     const result = await prisma.$transaction(async tx => {
-      // Create the user
       const user = await tx.user.create({
         data: {
           first_name: payload.firstName as string,
@@ -54,7 +51,6 @@ export async function customerRegister(state: FormState, formData: FormData) {
         }
       });
 
-      // Create the customer profile
       const customerProfile = await tx.customerProfile.create({
         data: {
           user_id: user.id
@@ -68,7 +64,6 @@ export async function customerRegister(state: FormState, formData: FormData) {
   } catch (error: any) {
     console.error("Customer registration error:", error);
 
-    // Handle unique constraint errors (duplicate email)
     if (error.code === "P2002" && error.meta?.target?.includes("email")) {
       return {
         message: "An account with this email already exists.",

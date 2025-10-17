@@ -10,7 +10,6 @@ import PasswordField from "@/components/form/password-field";
 import { saveRegistrationData, getRegistrationData } from "@/app/lib/cookie";
 import { validateCredentials } from "@/app/schemas/register";
 
-// Action for credentials step validation and saving to cookies
 const validateCredentialsAction = async (
   prevState: any,
   formData: FormData
@@ -26,7 +25,6 @@ const validateCredentialsAction = async (
     return { errors: validation.error.flatten().fieldErrors };
   }
 
-  // Save to cookies
   await saveRegistrationData("credentials", data);
 
   return { success: true, data };
@@ -44,7 +42,6 @@ export default function Credentials() {
     password: ""
   });
 
-  // Load from cookies on mount
   useEffect(() => {
     const loadSavedData = async () => {
       const savedData = await getRegistrationData("credentials");
