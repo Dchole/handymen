@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { AccountType } from "@/app/types";
 import { CustomerRegisterFormSchema } from "@/app/lib/customer-schemas";
 import bcrypt from "bcryptjs";
+import { Prisma } from "@prisma/client";
 
 type FormState =
   | {
@@ -61,10 +62,15 @@ export async function customerRegister(state: FormState, formData: FormData) {
     });
 
     return { message: "Registration successful!", status: "success" };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Customer registration error:", error);
 
-    if (error.code === "P2002" && error.meta?.target?.includes("email")) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002" &&
+      Array.isArray(error.meta?.target) &&
+      error.meta.target.includes("email")
+    ) {
       return {
         message: "An account with this email already exists.",
         status: "error"

@@ -2,9 +2,11 @@
 
 import { prisma } from "@/lib/prisma";
 import { getToken } from "@/app/lib/sessions";
-import { verify } from "jsonwebtoken";
+import { JwtPayload, verify } from "jsonwebtoken";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { BookingRequest } from "../types";
+import { Prisma, RequestSlotsStatus } from "@prisma/client";
 
 const BookingRequestsQuerySchema = z.object({
   start_time: z.string().nullable().optional(),
@@ -16,24 +18,29 @@ const BookingRequestsQuerySchema = z.object({
     val => val ?? "created_at",
     z.enum(["created_at", "start_time", "end_time"])
   ),
-  status: z.string().nullable().optional(),
+  status: z.enum(RequestSlotsStatus).nullable().optional(),
   profession: z.string().nullable().optional()
 });
 
 async function getUserId(): Promise<string | null> {
   try {
     const token = await getToken();
+
     if (!token) return null;
 
-    const decoded = verify(token, process.env.JWT_SECRET!) as any;
-    return decoded.sub;
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET is not defined in environment variables.");
+    }
+
+    const decoded = verify(token, process.env.JWT_SECRET) as JwtPayload;
+    return decoded.sub || null;
   } catch (error) {
     console.error("Error decoding token:", error);
     return null;
   }
 }
 
-function formatBookingRequest(bookingRequest: any) {
+function formatBookingRequest(bookingRequest: BookingRequest) {
   return {
     id: bookingRequest.id,
     customer_profile_id: bookingRequest.customer_profile_id,
@@ -51,15 +58,22 @@ function formatBookingRequest(bookingRequest: any) {
   };
 }
 
-function buildWhereClause(query: any) {
-  const whereClause: any = {};
+type QueryParams = {
+  start_time?: Prisma.RequestSlotsWhereInput["start_time"] | null;
+  end_time?: Prisma.RequestSlotsWhereInput["end_time"] | null;
+  status?: Prisma.RequestSlotsWhereInput["status"] | null;
+  profession?: Prisma.RequestSlotsWhereInput["profession"] | null;
+};
+
+function buildWhereClause(query: QueryParams): Prisma.RequestSlotsWhereInput {
+  const whereClause: Prisma.RequestSlotsWhereInput = {};
 
   if (query.start_time) {
-    whereClause.start_time = { gte: new Date(query.start_time) };
+    whereClause.start_time = { gte: new Date(query.start_time as string) };
   }
 
   if (query.end_time) {
-    whereClause.end_time = { lte: new Date(query.end_time) };
+    whereClause.end_time = { lte: new Date(query.end_time as string) };
   }
 
   if (query.status) {
@@ -146,7 +160,7 @@ export async function getMyBookingRequests(searchParams: URLSearchParams) {
     });
 
     const bookings = queriedBookings.map(booking =>
-      formatBookingRequest(booking)
+      formatBookingRequest(booking as BookingRequest)
     );
 
     const total = await prisma.requestSlots.count({ where: whereClause });
@@ -166,7 +180,7 @@ export async function getMyBookingRequests(searchParams: URLSearchParams) {
         hasPrevPage
       }
     };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Get my booking requests error:", error);
     return {
       message: "An unexpected error occurred. Please try again.",
@@ -199,10 +213,13 @@ export async function cancelBookingRequest(id: string) {
       message: "Booking request successfully cancelled",
       status: "success"
     };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Cancel booking request error:", error);
 
-    if (error.code === "P2025") {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
       return {
         message: "Booking request not found",
         status: "error"
@@ -230,8 +247,18 @@ type FormState =
         profession?: string[];
       };
       message?: string;
-      status?: string;
-      info?: any;
+      status?: RequestSlotsStatus;
+      info?: {
+        recommendation: {
+          handyman: {
+            id: string;
+            name: string;
+          };
+          suggestedStartTime: Date;
+          suggestedEndTime: Date;
+          timeDifferenceHours: number;
+        };
+      };
     }
   | undefined;
 
@@ -428,7 +455,7 @@ export async function createBookingRequest(
       message: "Request added successfully!",
       status: "success"
     };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Create booking request error:", error);
     return {
       message: "An unexpected error occurred. Please try again.",

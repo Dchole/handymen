@@ -52,13 +52,17 @@ export type AvailabilitySlotConnection = {
 export type BookingRequest = {
   id: string;
   customer_profile_id: string;
-  start_time: string;
-  end_time: string;
+  start_time: Date;
+  end_time: Date;
   profession: string;
   status: RequestSlotsStatus;
-  handyman: {
-    id: string;
-    name: string;
+  assigned_handyman_id: string | null;
+  assigned_handyman: {
+    user: {
+      id: string;
+      first_name: string;
+      last_name: string;
+    };
     professions: string[];
   } | null;
 };

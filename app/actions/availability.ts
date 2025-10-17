@@ -2,9 +2,10 @@
 
 import { prisma } from "@/lib/prisma";
 import { getToken } from "@/app/lib/sessions";
-import { verify } from "jsonwebtoken";
+import { JwtPayload, verify } from "jsonwebtoken";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { Prisma } from "@prisma/client";
 
 const AvailabilityFormSchema = z.object({
   startTime: z.string().nonempty("Start time is required").trim(),
@@ -33,10 +34,15 @@ type FormState =
 async function getUserId(): Promise<string | null> {
   try {
     const token = await getToken();
+
     if (!token) return null;
 
-    const decoded = verify(token, process.env.JWT_SECRET!) as any;
-    return decoded.sub;
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET is not defined in environment variables.");
+    }
+
+    const decoded = verify(token, process.env.JWT_SECRET) as JwtPayload;
+    return decoded.sub || null;
   } catch (error) {
     console.error("Error decoding token:", error);
     return null;
@@ -131,7 +137,7 @@ export async function createAvailability(state: FormState, formData: FormData) {
       message: "Availability created successfully",
       status: "success"
     };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Create availability error:", error);
     return {
       message: "An unexpected error occurred. Please try again.",
@@ -234,7 +240,7 @@ export async function editAvailability(state: FormState, formData: FormData) {
       message: "Availability updated successfully",
       status: "success"
     };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Update availability error:", error);
     return {
       message: "An unexpected error occurred. Please try again.",
@@ -270,7 +276,11 @@ export async function getMyAvailabilitySlots(searchParams: URLSearchParams) {
   const { start_time, end_time, page, limit, sort } = validatedQuery.data;
 
   try {
-    const whereClause: any = {
+    const whereClause: {
+      start_time?: { gte: Date; lte?: Date };
+      end_time?: { lte: Date };
+      handyman_profile: { user_id: string };
+    } = {
       start_time: { gte: new Date() },
       handyman_profile: { user_id: userId }
     };
@@ -308,7 +318,7 @@ export async function getMyAvailabilitySlots(searchParams: URLSearchParams) {
         hasPrevPage
       }
     };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Get my availability slots error:", error);
     return {
       message: "An unexpected error occurred. Please try again.",
@@ -340,10 +350,13 @@ export async function deleteAvailabilitySlot(id: string) {
       message: "Availability slot deleted successfully",
       status: "success"
     };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Delete availability slot error:", error);
 
-    if (error.code === "P2025") {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
       return {
         message: "Availability slot not found",
         status: "error"

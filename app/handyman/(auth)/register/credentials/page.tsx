@@ -11,7 +11,7 @@ import { saveRegistrationData, getRegistrationData } from "@/app/lib/cookie";
 import { validateCredentials } from "@/app/schemas/register";
 
 const validateCredentialsAction = async (
-  prevState: any,
+  _prevState: unknown,
   formData: FormData
 ) => {
   const data = {

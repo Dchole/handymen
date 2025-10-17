@@ -9,7 +9,7 @@ import { saveRegistrationData, getRegistrationData } from "@/app/lib/cookie";
 import { validatePersonalInfo } from "@/app/schemas/register";
 
 const validatePersonalInfoAction = async (
-  prevState: any,
+  _prevState: unknown,
   formData: FormData
 ) => {
   const data = {

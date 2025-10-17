@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 
-export const saveRegistrationData = async (step: string, data: any) => {
+export const saveRegistrationData = async (step: string, data: unknown) => {
   const cookieStore = await cookies();
   cookieStore.set(`registration-${step}`, JSON.stringify(data), {
     httpOnly: true,

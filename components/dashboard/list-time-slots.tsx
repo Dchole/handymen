@@ -29,7 +29,7 @@ const ListTimeSlots = async ({ searchParams }: ListTimeSlotsProps) => {
   let hasPrevPage = false;
   let hasNextPage = false;
   let totalPages = 1;
-  let availabilitySlots: any[] = [];
+  let availabilitySlots: typeof result.data = [];
 
   if (result.status === "success" && result.data) {
     availabilitySlots = result.data;
@@ -66,12 +66,12 @@ const ListTimeSlots = async ({ searchParams }: ListTimeSlotsProps) => {
         </div>
       ) : (
         <div className="flex flex-wrap gap-8">
-          {availabilitySlots.map((slot: any) => (
+          {availabilitySlots.map(slot => (
             <TimeSlot
               key={slot.id}
               id={slot.id}
-              start_time={slot.start_time}
-              end_time={slot.end_time}
+              start_time={slot.start_time as unknown as string}
+              end_time={slot.end_time as unknown as string}
             />
           ))}
         </div>

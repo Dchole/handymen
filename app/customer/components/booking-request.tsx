@@ -15,8 +15,8 @@ import { RequestSlotsStatus } from "@/app/types";
 interface BookingRequestCardProps {
   id: string;
   handyman: { id: string; name: string; professions: string[] } | null;
-  startTime: string;
-  endTime: string;
+  startTime: Date;
+  endTime: Date;
   status: RequestSlotsStatus;
   profession: string;
 }

@@ -56,12 +56,17 @@ export async function login(state: FormState, formData: FormData) {
     }
 
     const payload = { sub: user.id };
-    const token = sign(payload, process.env.JWT_SECRET!, { expiresIn: "7d" });
+
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET is not defined in environment variables.");
+    }
+
+    const token = sign(payload, process.env.JWT_SECRET, { expiresIn: "7d" });
 
     await createSession({ token, accountType: AccountType.CUSTOMER });
 
     return { message: "Login successful!", status: "success" };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Login error:", error);
 
     return {
