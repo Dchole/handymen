@@ -20,7 +20,7 @@ export async function deleteSession() {
   cookieStore.delete("session");
 }
 
-export async function getToken() {
+export async function getSession() {
   const cookieStore = await cookies();
   const session = cookieStore.get("session");
 
@@ -28,5 +28,15 @@ export async function getToken() {
     ? JSON.parse(session.value)
     : { token: "" };
 
-  return sessionValue.token;
+  return sessionValue;
+}
+
+export async function getToken() {
+  const session = await getSession();
+  return session.token;
+}
+
+export async function getAccountType() {
+  const session = await getSession();
+  return session.accountType;
 }
