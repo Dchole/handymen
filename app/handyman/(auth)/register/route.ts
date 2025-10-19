@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
-export default function RegisterHandyman() {
+export async function GET() {
   redirect("/handyman/register/personal-info");
 }
